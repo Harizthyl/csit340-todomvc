@@ -3,6 +3,7 @@ import { useState } from "react";
 function Todos() {
   const [text, setText] = useState("");
   const [todos, setTodos] = useState([]);
+  const [filter, setFilter] = useState("all");
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -18,6 +19,7 @@ function Todos() {
     setTodos([...todos, newTodo]);
     setText("");
   }
+
   function handleToggle(id) {
     setTodos(
       todos.map((todo) =>
@@ -40,7 +42,18 @@ function Todos() {
     setTodos(todos.map((todo) => ({ ...todo, completed: !allCompleted })));
   }
 
-  const allCompleted = todos.length > 0 && todos.every((todo) => todo.completed)
+  const allCompleted =
+    todos.length > 0 && todos.every((todo) => todo.completed);
+
+  const filteredTodos = todos.filter((todo) => {
+    if (filter === "active") {
+      return !todo.completed;
+    }
+    if (filter === "completed") {
+      return todo.completed;
+    }
+    return true;
+  });
 
   return (
     <section className="mx-auto max-w-[550px]">
@@ -59,7 +72,13 @@ function Todos() {
         {todos.length > 0 && (
           <>
             <main className="relative border-t border-[#e6e6e6]">
-              <input id="toggle-all" type="checkbox" className="peer sr-only" checked={allCompleted} onChange={handleToggleAll}/>
+              <input
+                id="toggle-all"
+                type="checkbox"
+                className="peer sr-only"
+                checked={allCompleted}
+                onChange={handleToggleAll}
+              />
               <label
                 htmlFor="toggle-all"
                 className="absolute -top-[66px] left-0 flex h-[65px] w-[60px] cursor-pointer items-center justify-center text-[22px] text-[#949494] peer-checked:text-[#484848]"
@@ -68,7 +87,7 @@ function Todos() {
               </label>
 
               <ul>
-                {todos.map((todo) => (
+                {filteredTodos.map((todo) => (
                   <li
                     key={todo.id}
                     className="group relative flex items-center border-b border-[#ededed] text-2xl"
@@ -109,7 +128,12 @@ function Todos() {
                 <li>
                   <button
                     type="button"
-                    className="cursor-pointer rounded-[3px] border border-[#b83f45]/20 px-[7px] py-[3px]"
+                    onClick={() => setFilter("all")}
+                    className={
+                      filter === "all"
+                        ? "cursor-pointer rounded-[3px] border border-[#b83f45]/20 px-[7px] py-[3px]"
+                        : "cursor-pointer rounded-[3px] border border-transparent px-[7px] py-[3px] hover:border-[#b83f45]/10"
+                    }
                   >
                     All
                   </button>
@@ -117,7 +141,12 @@ function Todos() {
                 <li>
                   <button
                     type="button"
-                    className="cursor-pointer rounded-[3px] border border-transparent px-[7px] py-[3px] hover:border-[#b83f45]/10"
+                    onClick={() => setFilter("active")}
+                    className={
+                      filter === "active"
+                        ? "cursor-pointer rounded-[3px] border border-[#b83f45]/20 px-[7px] py-[3px]"
+                        : "cursor-pointer rounded-[3px] border border-transparent px-[7px] py-[3px] hover:border-[#b83f45]/10"
+                    }
                   >
                     Active
                   </button>
@@ -125,7 +154,12 @@ function Todos() {
                 <li>
                   <button
                     type="button"
-                    className="cursor-pointer rounded-[3px] border border-transparent px-[7px] py-[3px] hover:border-[#b83f45]/10"
+                    onClick={() => setFilter("completed")}
+                    className={
+                      filter === "completed"
+                        ? "cursor-pointer rounded-[3px] border border-[#b83f45]/20 px-[7px] py-[3px]"
+                        : "cursor-pointer rounded-[3px] border border-transparent px-[7px] py-[3px] hover:border-[#b83f45]/10"
+                    }
                   >
                     Completed
                   </button>
