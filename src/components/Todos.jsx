@@ -1,23 +1,33 @@
 import { useState } from "react";
 
 function Todos() {
-  const [text, setText] = useState('');
+  const [text, setText] = useState("");
   const [todos, setTodos] = useState([
     { id: 1, text: "Learn the spread operator", completed: false },
     { id: 2, text: "Set up Tailwind", completed: true },
-  ])
+  ]);
 
   function handleSubmit(e) {
-    e.preventDefault()
-    const trimmed = text.trim()
-    if (trimmed === '') {
-      return
+    e.preventDefault();
+    const trimmed = text.trim();
+    if (trimmed === "") {
+      return;
     }
-    const newTodo = { id: crypto.randomUUID(), text: trimmed, completed: false }
-    setTodos([...todos, newTodo])
-    setText('')
+    const newTodo = {
+      id: crypto.randomUUID(),
+      text: trimmed,
+      completed: false,
+    };
+    setTodos([...todos, newTodo]);
+    setText("");
   }
-
+  function handleToggle(id) {
+    setTodos(
+      todos.map((todo) =>
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo,
+      ),
+    );
+  }
   return (
     <section className="mx-auto max-w-[550px]">
       <h1 className="text-center text-[80px] font-extralight text-[#b83f45]">
@@ -50,7 +60,7 @@ function Todos() {
                 <input
                   type="checkbox"
                   checked={todo.completed}
-                  readOnly
+                  onChange={() => handleToggle(todo.id)}
                   className="ml-[15px] size-[30px] shrink-0 cursor-pointer accent-[#59a193]"
                 />
                 <span
